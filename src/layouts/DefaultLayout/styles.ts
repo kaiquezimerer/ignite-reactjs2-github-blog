@@ -3,7 +3,8 @@ import styled from 'styled-components'
 import Cover from '../../assets/Cover.png';
 
 export const LayoutContainer = styled.main`
-  background-color: ${props => props.theme['gray-900']};
+  background-color: ${props => props.theme['gray-800']};
+  padding-bottom: 4rem;
 `;
 
 export const LayoutHeader = styled.header`

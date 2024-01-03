@@ -88,3 +88,34 @@ export const Input = styled.input`
     border-color: ${props => props.theme['blue']};
   }
 `;
+
+export const PostList = styled.ol`
+  margin-top: 3rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+`;
+
+export const Post = styled.article`
+  width: 416px;
+  height: 260px;
+  padding: 2rem;
+  border-radius: 10px;
+  background-color: ${props => props.theme['gray-600']};
+
+  header {
+    display: flex;
+    justify-content: space-between;
+
+    p {
+      font-size: 0.875rem;
+      color: ${props => props.theme['gray-300']};
+    }
+  }
+
+  h3 {
+    max-width: 283px;
+    font-size: 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+`;
