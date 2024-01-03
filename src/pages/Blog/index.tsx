@@ -1,5 +1,5 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
   faArrowUpRightFromSquare,
   faBuilding,
@@ -8,7 +8,13 @@ import {
 
 import Avatar from '../../assets/Avatar.jpg';
 
-import { Content, Header, Input, Post, PostList } from './styles';
+import { 
+  Content,
+  Header,
+  Input,
+  Post,
+  PostList,
+} from './styles';
 
 export function Blog() {
   function truncateString(str: string, num: number): string {
@@ -23,7 +29,7 @@ export function Blog() {
       <Header>
         <img src={Avatar} alt="" />
         <div>
-          <a href="#">
+          <a href="#" className="right">
             Github
             <FontAwesomeIcon icon={faArrowUpRightFromSquare}/>
           </a>

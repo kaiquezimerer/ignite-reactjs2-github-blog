@@ -1,10 +1,14 @@
-import { createGlobalStyle } from 'styled-components'
+import { createGlobalStyle } from 'styled-components';
 
 export const GlobalStyle = createGlobalStyle`
   * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+  }
+
+  ::placeholder {
+    color: ${props => props.theme['gray-400']};
   }
 
   body {
@@ -37,9 +41,5 @@ export const GlobalStyle = createGlobalStyle`
     &:hover {
       text-decoration: underline;
     }
-  }
-
-  ::placeholder {
-    color: ${props => props.theme['gray-400']};
   }
 `
