@@ -38,4 +38,8 @@ export const GlobalStyle = createGlobalStyle`
       text-decoration: underline;
     }
   }
+
+  ::placeholder {
+    color: ${props => props.theme['gray-400']};
+  }
 `
