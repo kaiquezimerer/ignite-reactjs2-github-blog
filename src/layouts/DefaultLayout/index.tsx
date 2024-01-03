@@ -2,7 +2,8 @@ import { Outlet } from 'react-router-dom';
 
 import {
   LayoutContainer,
-  ContentLayout,
+  LayoutHeader,
+  LayoutContent,
  } from './styles';
 
 import Logo from '../../assets/Logo.svg';
@@ -10,16 +11,16 @@ import Logo from '../../assets/Logo.svg';
 export function DefaultLayout() {
   return (
     <LayoutContainer>
-      <header>
+      <LayoutHeader>
         <img 
           src={Logo} 
           alt="Github Blog" 
           title="Github Blog"
         />
-      </header>
-      <ContentLayout>
+      </LayoutHeader>
+      <LayoutContent>
         <Outlet />
-      </ContentLayout>
+      </LayoutContent>
     </LayoutContainer>
   );
 }
