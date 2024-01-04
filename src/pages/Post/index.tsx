@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import Markdown from 'react-markdown';
 import { Link, useParams } from 'react-router-dom';
 import { ptBR } from 'date-fns/locale';
 import { formatDistanceToNow } from 'date-fns';
@@ -67,6 +68,10 @@ export function Post() {
     fetchGithubIssueData();
   }, []);
 
+  if (!post.title) {
+    return 'Carregando...';
+  }
+
   return (
     <article>
       <Header>
@@ -97,9 +102,7 @@ export function Post() {
         </ul>
       </Header>
       <Content>
-        <p>
-          {post.body}
-        </p>
+        <Markdown>{post.body}</Markdown>
       </Content>
     </article>
   );
