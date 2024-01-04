@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { React, useState, useEffect } from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import ptBR from 'date-fns/locale/pt-BR';
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
@@ -49,6 +49,7 @@ const defaultUserValues: User = Object.freeze({
 export function Blog() {
   const [user, setUser] = useState<User>(defaultUserValues);
   const [posts, setPosts] = useState<Post[]>([] as Post[]);
+  const [search, setSearch] = useState('');
 
   function truncateString(str: string, num: number): string {
     if (str.length <= num) {
@@ -57,10 +58,20 @@ export function Blog() {
     return str.slice(0, num) + '...';
   }
 
-  const publishedDaterelativeToNow = (publishedAt: Date) => (formatDistanceToNow(publishedAt, {
+  const publishedDaterelativeToNow = (publishedAt: Date): string => (formatDistanceToNow(publishedAt, {
     locale: ptBR,
     addSuffix: false,
   }).replace('cerca de', '').replace('mais de', ''));
+
+  function handleChangeSearch(event: React.ChangeEvent<HTMLInputElement>) {
+    setSearch(event.target.value);
+  }
+
+  function handleSubmit(event: React.ChangeEvent<HTMLInputElement>) {
+    event.preventDefault();
+
+    fetchGithubIssuesData(encodeURIComponent(search));
+  }
 
   async function fetchGithubUserData(): Promise<void> {
     const username = 'rocketseat-education'; 
@@ -87,7 +98,7 @@ export function Blog() {
     const username = 'rocketseat-education';
     const repo = 'reactjs-github-blog-challenge';
 
-    const endpoint = `/search/issues?q=${query}repo:${username}/${repo}`;
+    const endpoint = `/search/issues?q=${query}%20repo:${username}/${repo}`;
 
     try {
       const { data } = await api.get(endpoint);
@@ -139,7 +150,16 @@ export function Blog() {
           <h2>Publicações</h2>
           <p>{`${posts?.length} ${posts?.length > 1 || !posts.length? 'publicações' : 'publicação'}`}</p>
         </header>
-        <Input placeholder="Buscar conteúdo" type="search" name="search" />
+        <form onSubmit={handleSubmit}>
+          <Input 
+            placeholder="Buscar conteúdo"
+            type="search" 
+            name="search"
+            value={search}
+            maxLength={50}
+            onChange={handleChangeSearch}
+          />
+        </form>
         {
           !!posts.length && (
             <PostList>
