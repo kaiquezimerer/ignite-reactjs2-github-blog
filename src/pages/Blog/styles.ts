@@ -97,11 +97,18 @@ export const PostList = styled.ol`
 `;
 
 export const Post = styled.article`
+  cursor: pointer;
   width: 416px;
   height: 260px;
   padding: 2rem;
   border-radius: 10px;
   background-color: ${props => props.theme['gray-600']};
+  transition: transform 300ms ease, box-shadow 30ms ease;
+
+  &:hover {
+    transform: translate(-8px, -8px);
+    box-shadow: 0px 2px 28px 0px rgba(0, 0, 0, 0.40);
+  }
 
   header {
     display: flex;

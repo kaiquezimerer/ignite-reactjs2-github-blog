@@ -1,4 +1,4 @@
-import { React, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import ptBR from 'date-fns/locale/pt-BR';
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
@@ -18,6 +18,7 @@ import {
   Post,
   PostList,
 } from './styles';
+import { useNavigate } from "react-router-dom";
 
 interface User {
   name: string;
@@ -51,6 +52,8 @@ export function Blog() {
   const [posts, setPosts] = useState<Post[]>([] as Post[]);
   const [search, setSearch] = useState('');
 
+  const navigate = useNavigate();
+
   function truncateString(str: string, num: number): string {
     if (str.length <= num) {
       return str;
@@ -67,10 +70,16 @@ export function Blog() {
     setSearch(event.target.value);
   }
 
-  function handleSubmit(event: React.ChangeEvent<HTMLInputElement>) {
+  function handleSubmit(event: React.ChangeEvent<HTMLFormElement>) {
     event.preventDefault();
 
     fetchGithubIssuesData(encodeURIComponent(search));
+  }
+
+  function handleGoToPost(number: number) {
+    if (number) {
+      navigate(`/post/${number}`);
+    }
   }
 
   async function fetchGithubUserData(): Promise<void> {
@@ -164,7 +173,10 @@ export function Blog() {
           !!posts.length && (
             <PostList>
               {posts.map(post => (
-                <li key={post.number}>
+                <li 
+                  key={post.number} 
+                  onClick={() => handleGoToPost(post.number)}
+                >
                   <Post>
                     <header>
                       <h3>{truncateString(post.title, 50)}</h3>
