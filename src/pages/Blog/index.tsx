@@ -132,7 +132,7 @@ export function Blog() {
       <Header>
         <img src={user.avatar} alt={user.name} title={user.name} />
         <div>
-          <a href={user.url} target="_blank" className="right">
+          <a href={user.url} target="_blank">
             Github
             <FontAwesomeIcon icon={faArrowUpRightFromSquare}/>
           </a>
