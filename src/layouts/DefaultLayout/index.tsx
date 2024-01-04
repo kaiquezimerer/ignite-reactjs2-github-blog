@@ -1,4 +1,4 @@
-import { Outlet } from 'react-router-dom';
+import { Link, Outlet } from 'react-router-dom';
 
 import {
   LayoutContainer,
@@ -12,11 +12,13 @@ export function DefaultLayout() {
   return (
     <LayoutContainer>
       <LayoutHeader>
-        <img 
-          src={Logo} 
-          alt="Github Blog" 
-          title="Github Blog"
-        />
+        <Link to="/">
+          <img 
+            src={Logo} 
+            alt="Github Blog" 
+            title="Github Blog"
+          />
+        </Link>
       </LayoutHeader>
       <LayoutContent>
         <Outlet />

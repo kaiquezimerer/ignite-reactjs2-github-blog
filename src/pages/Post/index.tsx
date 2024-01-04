@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
 import Markdown from 'react-markdown';
+import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { ptBR } from 'date-fns/locale';
 import { formatDistanceToNow } from 'date-fns';
@@ -44,8 +44,8 @@ export function Post() {
   }).replace('cerca de', '').replace('mais de', ''));
 
   async function fetchGithubIssueData(): Promise<void> {
-    const username = 'rocketseat-education';
-    const repo = 'reactjs-github-blog-challenge';
+    const username = import.meta.env.VITE_USERNAME;
+    const repo = import.meta.env.VITE_REPO;
     const endpoint = `repos/${username}/${repo}/issues/${number}`;
 
     try {
@@ -59,8 +59,8 @@ export function Post() {
         comments: data.comments,
         created_at: data.created_at,
       });
-    } catch(error) {
-      console.error(error);
+    } catch(err) {
+      console.error(err);
     }
   }
   
