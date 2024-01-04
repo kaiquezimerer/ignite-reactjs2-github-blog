@@ -1,12 +1,15 @@
+import { useState, useEffect } from 'react';
+import { formatDistanceToNow } from 'date-fns';
+import ptBR from 'date-fns/locale/pt-BR';
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
   faArrowUpRightFromSquare,
   faBuilding,
   faUserGroup,
-} from '@fortawesome/free-solid-svg-icons'
+} from '@fortawesome/free-solid-svg-icons';
 
-import Avatar from '../../assets/Avatar.jpg';
+import { api } from '../../lib/axios';
 
 import { 
   Content,
@@ -16,7 +19,37 @@ import {
   PostList,
 } from './styles';
 
+interface User {
+  name: string;
+  bio?: string;
+  url: string;
+  login: string;
+  company?: string;
+  followers: number;
+  avatar?: string;
+}
+
+interface Post {
+  number: number; // id
+  title: string;
+  body?: string;
+  created_at: string;
+}
+
+const defaultUserValues: User = Object.freeze({
+  name: '',
+  bio: '',
+  url: '',
+  login: '',
+  company: '',
+  followers: 0,
+  avatar: ''
+});
+
 export function Blog() {
+  const [user, setUser] = useState<User>(defaultUserValues);
+  const [posts, setPosts] = useState<Post[]>([] as Post[]);
+
   function truncateString(str: string, num: number): string {
     if (str.length <= num) {
       return str;
@@ -24,31 +57,79 @@ export function Blog() {
     return str.slice(0, num) + '...';
   }
 
+  const publishedDaterelativeToNow = (publishedAt: Date) => (formatDistanceToNow(publishedAt, {
+    locale: ptBR,
+    addSuffix: false,
+  }).replace('cerca de', '').replace('mais de', ''));
+
+  async function fetchGithubUserData(): Promise<void> {
+    const username = 'rocketseat-education'; 
+    const endpoint = `/users/${username}`;
+
+    try {
+      const { data } = await api.get(endpoint);
+
+      setUser({
+        name: data?.name,
+        bio: data?.bio,
+        url: data?.html_url,
+        login: data?.login,
+        company: data?.company,
+        followers: data?.followers,
+        avatar: data?.avatar_url,
+      });
+    } catch(err) {
+      console.error(err);
+    }
+  }
+
+  async function fetchGithubIssuesData(query: string = ''): Promise<void> {
+    const username = 'rocketseat-education';
+    const repo = 'reactjs-github-blog-challenge';
+
+    const endpoint = `/search/issues?q=${query}repo:${username}/${repo}`;
+
+    try {
+      const { data } = await api.get(endpoint);
+
+      setPosts(data.items);
+    } catch(err) {
+      console.error(err);
+    }
+  }
+
+  useEffect(() => {
+    fetchGithubUserData();
+    fetchGithubIssuesData();
+  }, [])
+
+  if (!user?.name.length) {
+    return 'Carregando...';
+  }
+
   return (
     <section>
       <Header>
-        <img src={Avatar} alt="" />
+        <img src={user.avatar} alt={user.name} title={user.name} />
         <div>
-          <a href="#" className="right">
+          <a href={user.url} target="_blank" className="right">
             Github
             <FontAwesomeIcon icon={faArrowUpRightFromSquare}/>
           </a>
-          <h1>Cameron Williamson</h1>
-          <p>
-            Tristique volutpat pulvinar vel massa, pellentesque egestas. Eu viverra massa quam dignissim aenean malesuada suscipit. Nunc, volutpat pulvinar vel mass.
-          </p>
+          <h1>{user.name}</h1>
+          <p>{user.bio}</p>
           <ul>
             <li>
               <FontAwesomeIcon icon={faGithub} />
-              cameronwll
+              {user.login}
             </li>
             <li>
               <FontAwesomeIcon icon={faBuilding} />
-              Rocketseat
+              {user.company || '-'}
             </li>
             <li>
               <FontAwesomeIcon icon={faUserGroup} />
-              32 seguidores
+              {`${user.followers} ${(user.followers > 1 || !user.followers)? 'seguidores': 'seguidor'}`}
             </li>
           </ul>
         </div>
@@ -56,89 +137,28 @@ export function Blog() {
       <Content>
         <header>
           <h2>Publicações</h2>
-          <p>6 publicações</p>
+          <p>{`${posts?.length} ${posts?.length > 1 || !posts.length? 'publicações' : 'publicação'}`}</p>
         </header>
         <Input placeholder="Buscar conteúdo" type="search" name="search" />
-        <PostList>
-          <li>
-            <Post>
-              <header>
-                <h3>JavaScript data types and data structures</h3>
-                <p>Há 1 dia</p>
-              </header>
-              <p>
-                {
-                  truncateString('Programming languages all have built-in data structures, but these often differ from one language to another. This article attempts to list the built-in data structures available in JavaScript and what properties they have. These can be used to build other data structures. Wherever possible, comparisons with other languages are drawn.', 181)
-                }
-              </p>
-            </Post>
-          </li>
-          <li>
-            <Post>
-              <header>
-                <h3>JavaScript data types and data structures</h3>
-                <p>Há 1 dia</p>
-              </header>
-              <p>
-                {
-                  truncateString('Programming languages all have built-in data structures, but these often differ from one language to another. This article attempts to list the built-in data structures available in JavaScript and what properties they have. These can be used to build other data structures. Wherever possible, comparisons with other languages are drawn.', 181)
-                }
-              </p>
-            </Post>
-          </li>
-          <li>
-            <Post>
-              <header>
-                <h3>JavaScript data types and data structures</h3>
-                <p>Há 1 dia</p>
-              </header>
-              <p>
-                {
-                  truncateString('Programming languages all have built-in data structures, but these often differ from one language to another. This article attempts to list the built-in data structures available in JavaScript and what properties they have. These can be used to build other data structures. Wherever possible, comparisons with other languages are drawn.', 181)
-                }
-              </p>
-            </Post>
-          </li>
-          <li>
-            <Post>
-              <header>
-                <h3>JavaScript data types and data structures</h3>
-                <p>Há 1 dia</p>
-              </header>
-              <p>
-                {
-                  truncateString('Programming languages all have built-in data structures, but these often differ from one language to another. This article attempts to list the built-in data structures available in JavaScript and what properties they have. These can be used to build other data structures. Wherever possible, comparisons with other languages are drawn.', 181)
-                }
-              </p>
-            </Post>
-          </li>
-          <li>
-            <Post>
-              <header>
-                <h3>JavaScript data types and data structures</h3>
-                <p>Há 1 dia</p>
-              </header>
-              <p>
-                {
-                  truncateString('Programming languages all have built-in data structures, but these often differ from one language to another. This article attempts to list the built-in data structures available in JavaScript and what properties they have. These can be used to build other data structures. Wherever possible, comparisons with other languages are drawn.', 181)
-                }
-              </p>
-            </Post>
-          </li>
-          <li>
-            <Post>
-              <header>
-                <h3>JavaScript data types and data structures</h3>
-                <p>Há 1 dia</p>
-              </header>
-              <p>
-                {
-                  truncateString('Programming languages all have built-in data structures, but these often differ from one language to another. This article attempts to list the built-in data structures available in JavaScript and what properties they have. These can be used to build other data structures. Wherever possible, comparisons with other languages are drawn.', 181)
-                }
-              </p>
-            </Post>
-          </li>
-        </PostList>
+        {
+          !!posts.length && (
+            <PostList>
+              {posts.map(post => (
+                <li key={post.number}>
+                  <Post>
+                    <header>
+                      <h3>{truncateString(post.title, 50)}</h3>
+                      <p>Há {publishedDaterelativeToNow(new Date(post.created_at))}</p>
+                    </header>
+                    <p>
+                      {truncateString(post.body || '', 150)}
+                    </p>
+                  </Post>
+                </li>
+              ))}
+            </PostList>
+          )
+        }
       </Content>
     </section>
   )

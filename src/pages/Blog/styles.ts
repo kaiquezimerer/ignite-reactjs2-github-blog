@@ -114,7 +114,7 @@ export const Post = styled.article`
   }
 
   h3 {
-    max-width: 283px;
+    max-width: 260px;
     font-size: 1.25rem;
     margin-bottom: 1.25rem;
   }
